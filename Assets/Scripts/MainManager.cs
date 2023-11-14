@@ -17,7 +17,7 @@ public class MainManager : MonoBehaviour
     private int m_Points;
     
     private bool m_GameOver = false;
-
+    public Text HighScoreText;
     
     // Start is called before the first frame update
     void Start()
@@ -35,6 +35,9 @@ public class MainManager : MonoBehaviour
                 brick.PointValue = pointCountArray[i];
                 brick.onDestroyed.AddListener(AddPoint);
             }
+        }
+        if (DataManager.Instance.HighScore > 0) {
+            SetHighScoreText();
         }
     }
 
@@ -72,5 +75,24 @@ public class MainManager : MonoBehaviour
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
+        if (m_Points > DataManager.Instance.HighScore) {
+            SetHighScore();
+        }
+    }
+
+    private void SetHighScore()
+    {
+            DataManager.Instance.HighScore = m_Points;
+            DataManager.Instance.SaveScore();
+            SetHighScoreText();
+    }
+
+    public void Restart()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    private void SetHighScoreText() {
+        HighScoreText.text = $"High Score : {DataManager.Instance.PlayerName} : {DataManager.Instance.HighScore}";
     }
 }
